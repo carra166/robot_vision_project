@@ -1,9 +1,16 @@
 import cv2
 import time
 import numpy as np
+import matplotlib.pyplot as plt
+
+
+#function to plot a set of points on a graph using Matplotlib (use x,y from the contour)
+def plotting():
+    pass
 
 cap = cv2.VideoCapture(0)
 
+#get the first few frames of the background and compute its mean
 first_frames = []
 t = 0
 while t < 100:
@@ -19,8 +26,8 @@ while True:
     if not ret:
         break
     
-    absdiff = cv2.absdiff(frame, background_img) #replace frame with disparity image
-    cv2.imwrite("absdiff.png", absdiff)
+    absdiff = cv2.absdiff(frame, background_img) #replace frame with difference image (difference from background image)
+    cv2.imwrite("absdiff.png", absdiff) #creates a difference image as a png
 
     gray = cv2.cvtColor(absdiff, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (13, 13), 0)
@@ -47,13 +54,7 @@ while True:
             cv2.circle(frame, (cX, cY), 3, (255, 255, 255), -1)
 
 
-            cv2.putText(frame, text, (cX - 20, cY - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA) #
-
-            # for points in contour:
-            #     x, y = points[0]
-            #     text = 'X: ' + str(np.int32(x)) + ', Y: ' + str(np.int32(y))
-            #     # print(x.dtype)
-            #     # print(y.dtype)
+            cv2.putText(frame, text, (cX - 20, cY - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA) #use to put text on frame
 
     #displaying images
     cv2.imshow("Orig", frame)
