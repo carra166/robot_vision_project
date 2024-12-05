@@ -32,15 +32,16 @@ while True:
     gray = cv2.cvtColor(absdiff, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (13, 13), 0)
     
-    kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(5,5))
+    kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(5,5)) #generates a kernal/structuring
     opening = cv2.morphologyEx(blurred, cv2.MORPH_OPEN, kernel) #dilation followed by erosion of image
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel) #erosion followed by dilation
-    _, fg_mask = cv2.threshold(closing, 34, 255, cv2.THRESH_BINARY) #25 is the sensitivity
+    _, fg_mask = cv2.threshold(closing, 200, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU) #25 is the sensitivity
+
     contours, hierarchy = cv2.findContours(fg_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     #drawing contours for only a specific size
     for contour in contours:
-        if cv2.contourArea(contour) > 500:  #adjust threshold for object size, smaller for more noticeable contours 
+        if 500 < cv2.contourArea(contour):  #adjust threshold for object size, smaller for more noticeable contours 
             epsi = 0.0003
             peri = cv2.arcLength(contour, True)
             approx = cv2.approxPolyDP(contour, epsi * peri, True)
